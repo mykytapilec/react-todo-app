@@ -6,20 +6,35 @@ export default class TaskInput extends React.Component {
 
     this.state = {
       input: '',
-      style: ''
+      styleInputText: '',
+      date: '',
+      styleInputDate:''
     };
   }
 
   addTask = () => {
-    const {input} = this.state;
-    if(input && input[0] !== " " ){
-      this.props.addTask(input);
-      this.setState({input:"", style:""});
+    const {input, date} = this.state;
+    if(input && date !== "" ){
+      this.props.addTask(input, date);
+      this.setState({
+        input:"", 
+        styleInputText:"",
+        date:"",
+        styleInputDate:""
+      });
     } 
 
     if (input === "" || input[0] === " ") {
-      this.setState({input: "", style: "inputBorderStyle"});
+      this.setState({input: "", styleInputText: "inputBorderStyle"});
     }
+
+    if (date === "") {
+      this.setState({date: "", styleInputDate: "inputBorderStyle"});
+    }
+  }
+
+  dateChange = event => {
+    this.setState({date: event.target.value});
   }
 
   inputChange = event => {
@@ -31,17 +46,27 @@ export default class TaskInput extends React.Component {
   };
 
   render() {
-    const {input,style} = this.state;
+    const {input,styleInputText, styleInputDate} = this.state;
 
     return (
       <div className="task-input" id={(this.props.textSearch || this.props.dateSearch) ? "inputNone" : ""}>
         <input 
-          className={style}
+          className={styleInputText}
           placeholder="NEW ITEMS"
           onChange={this.inputChange}
           onKeyPress={this.handleEnter}
           value={input}>
         </input>
+        <input
+          className={styleInputDate}
+          type="date" 
+          id="start" 
+          name="trip-start"
+          defaultValue=""
+          onChange={this.dateChange}
+          min="2018-01-01" 
+          max="2020-12-31"
+        />
         <button onClick={this.addTask}>ADD</button>
       </div>
     );

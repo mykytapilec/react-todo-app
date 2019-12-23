@@ -3,19 +3,25 @@ import React from 'react';
 export default class Toolbar extends React.Component {
   constructor(props) {
     super(props);
-    this.sorted = { dateMs: true, title: true };
+    this.state = {
+      tasks: this.props.data,
+      dateMs: true, 
+      title: true
+    }
   }
 
   sort(type) {
     const { update, data } = this.props;
-    const isSorted = this.sorted[type];
+    const isSorted = this.state[type];
     let direction = isSorted ? 1 : -1;
     const sorted = [].slice.call(data).sort((a, b) => {
       if (a[type] === b[type]) { return 0; };
       return a[type] > b[type] ? direction : direction * -1;
     });
 
-    this.sorted[type] = !isSorted;
+    this.setState ({
+      [type]: !isSorted
+    })
 
     update({
       tasks: sorted,
@@ -24,7 +30,7 @@ export default class Toolbar extends React.Component {
 
   reset() {
     this.props.update({
-      tasks: this.props.initialData,
+      tasks: this.state.tasks,
     });
   }
 

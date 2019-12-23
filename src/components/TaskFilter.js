@@ -1,69 +1,116 @@
 import React from 'react';
 
-export default ({ tasks, update }) => {
 
-  const textSearch = e => {
+export default class Task extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tasks: this.props.tasks, 
+      textInput: false,
+      dateInput: false,
+    }
+  }
+
+  textSearch = e => {
+
+    this.setState({
+      textInput: true
+    })
 
     const text = e.target.value.toLowerCase();
- 
-    const filter = tasks.filter(task => {
-      return task.title.toLowerCase().includes(text);
-    });
 
-    update({
-      tasks: filter,
-      textSearch: true
-    });
+    if(this.state.dateInput === true){
+      const filter = this.props.tasks.filter(task => {
+        return task.title.toLowerCase().includes(text);  
+      });
 
-    if(e.target.value === ""){
-      update({
-        tasks: tasks,
-        textSearch: false
+      this.props.update({
+        tasks: filter,
+      });
+    } 
+
+    if(this.state.dateInput === false) {
+      const filter = this.state.tasks.filter(task => {
+        return task.title.toLowerCase().includes(text);
+      });
+
+      this.props.update({
+        tasks: filter,
       });
     }
-    
-  };
 
-  const dateSearch = e => {
+
+    if(e.target.value ===""){
+      this.setState({
+        textInput: false
+      })
+    }
+
+  }
+
+  dateSearch = e => {
+
+    this.setState({
+      dateInput: true
+    })
 
     const time = Date.parse(e.target.value)/86400000;
 
-    const filter = tasks.filter(task => {
-      return task.dateMs === time;
-    });
 
-    update({
-      tasks: filter,
-      dateSearch: true
-    });
+    if(this.state.textInput === true){
+      const filter = this.props.tasks.filter(task => {
+        return task.dateMs === time;
+      });
 
-    if(e.target.value ===""){
-      update({
-        tasks: tasks,
-        dateSearch: false
+      this.props.update({
+        tasks: filter,
+      });
+    } 
+
+    if (this.state.textInput === false) {
+      const filter = this.state.tasks.filter(task => {
+        return task.dateMs === time;
+      });
+      this.props.update({
+        tasks: filter,
       });
     }
 
-  };
 
-  return (
-    <div className="task-filter">
-      <input
-        placeholder="TEXT SEACH"
-        defaultValue=""
-        onChange={textSearch}
-        type="text"
-      />
-      <input
-        type="date" 
-        id="start" 
-        name="trip-start"
-        defaultValue=""
-        onChange={dateSearch}
-        min="2018-01-01" 
-        max="2020-12-31"
-      />
-    </div> 
-  );
-};  
+    if(e.target.value ===""){
 
+      this.setState({
+        dateInput: false,
+      })
+
+      this.props.update({
+        tasks: this.state.tasks,
+      });
+
+    }
+  }
+
+
+
+  render(){ 
+    return (
+      <div className="task-filter">
+        <input
+          placeholder="TEXT SEACH"
+          defaultValue=""
+          onChange={this.textSearch}
+          type="text"
+        />
+        <input
+          type="date" 
+          id="start" 
+          name="trip-start"
+          defaultValue=""
+          onChange={this.dateSearch}
+          min="2018-01-01" 
+          max="2020-12-31"
+        />
+      </div> 
+    );
+  }
+}

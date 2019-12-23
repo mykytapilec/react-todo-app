@@ -1,22 +1,28 @@
 import React from 'react';
 
-export default ({task, ...props}) =>{
+export default class Task extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-  const className = "task " + (task.done ? "task-done" : "");
+  render(){
+    const {task, onChange, deleteTask} = this.props;
+    const className = "task " + (task.done ? "task-done" : "");
+    
 
-  return (
+    return (
     <div className={className}>
       <input 
         type="checkbox" 
         checked={task.done}
-        onChange={() => props.onChange(task.id)}
+        onChange={() => onChange(task.id)}
       />
       <p className="text">{task.title}</p>
       <p className="date">{task.date}</p>
       <div className="actionBtn">
-        <p onClick={() => props.deleteTask(task.id)}>&#10060;</p>
+        <p onClick={() => deleteTask(task.id)}>&#10060;</p>
       </div>
     </div>
-  )
-}; 
-
+    )
+  }
+}
