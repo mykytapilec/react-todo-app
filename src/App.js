@@ -22,40 +22,32 @@ class App extends React.Component {
   
 
   addTask = (task, date) => {
-    const refreshTasks = [...this.state.tasks];
-
-    refreshTasks.push({
-      id:Date.parse(new Date()),
-      title: task,
-      done: false,
-      date: date,
-      dateMs: Math.round(Date.parse(date)/86400000),
-    });
-
-    this.setState({
-      tasks:refreshTasks,
-    })
-
+    this.setState(state => {
+      let {tasks} = state;
+      tasks.push({
+        id:Date.parse(new Date()),
+        title: task,
+        done: false,
+        date: date,
+        dateMs: Math.round(Date.parse(date)/86400000),
+      });
+      return tasks;
+    }); 
   };
 
   doneTask = id => {
     const index = this.state.tasks.findIndex(task => task.id === id);
-
-    const refreshTasks = [...this.state.tasks];
-    refreshTasks[index].done = !refreshTasks[index].done;
-
-    this.setState({
-      tasks:refreshTasks,
+    this.setState(state=>{
+      let{tasks} = state;
+      tasks[index].done = !tasks[index].done;
+      return tasks;
     });
   }
 
   deleteTask = id => {  
-    const freshTasks = this.state.tasks.filter(task => task.id !== id);
-
-    this.setState({
-      tasks: freshTasks
+    this.setState(state => {
+      return {tasks: state.tasks.filter(task => task.id !== id)}
     })
-    
   }
 
   updateData = config => {
