@@ -9,7 +9,6 @@ export default class Task extends React.Component {
     const {task, onChange, deleteTask} = this.props;
     const className = "task " + (task.done ? "task-done" : "");
     
-
     return (
     <div className={className}>
       <input 

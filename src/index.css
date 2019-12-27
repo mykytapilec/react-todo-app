@@ -163,7 +163,3 @@ code {
 .task-input .inputBorderStyle {
   border: 3px solid red;
 }
-
-#inputNone{
-  display: none;
-}

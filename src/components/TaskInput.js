@@ -6,9 +6,9 @@ export default class TaskInput extends React.Component {
 
     this.state = {
       input: '',
-      styleInputText: '',
+      isInput: false,
       date: '',
-      styleInputDate:''
+      isDate: false,
     };
   }
 
@@ -17,19 +17,23 @@ export default class TaskInput extends React.Component {
     if(input && date !== "" ){
       this.props.addTask(input, date);
       this.setState({
-        input:"", 
-        styleInputText:"",
-        date:"",
-        styleInputDate:""
+        input: '',
+        isInput: false,
+        date: '',
+        isDate: false,
       });
     } 
 
     if (input === "" || input[0] === " ") {
-      this.setState({input: "", styleInputText: "inputBorderStyle"});
+      this.setState({input: "", isInput: true});
+    } else {
+      this.setState({isInput: false});
     }
 
     if (date === "") {
-      this.setState({date: "", styleInputDate: "inputBorderStyle"});
+      this.setState({date: "", isDate: true});
+    } else {
+      this.setState({isDate: false});
     }
   }
 
@@ -46,24 +50,25 @@ export default class TaskInput extends React.Component {
   };
 
   render() {
-    const {input,styleInputText, styleInputDate} = this.state;
+    const {input,isInput, isDate} = this.state;
 
     return (
-      <div className="task-input" id={(this.props.textSearch || this.props.dateSearch) ? "inputNone" : ""}>
+      <div className="task-input">
         <input 
-          className={styleInputText}
+          className={isInput ? "inputBorderStyle" : ""}
           placeholder="NEW ITEMS"
           onChange={this.inputChange}
           onKeyPress={this.handleEnter}
           value={input}>
         </input>
         <input
-          className={styleInputDate}
+          className={isDate ? "inputBorderStyle" : ""}
           type="date" 
           id="start" 
           name="trip-start"
           defaultValue=""
           onChange={this.dateChange}
+          onKeyPress={this.handleEnter}
           min="2018-01-01" 
           max="2020-12-31"
         />

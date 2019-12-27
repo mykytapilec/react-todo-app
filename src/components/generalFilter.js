@@ -1,124 +1,52 @@
-function generalFilter(tasks, text, time, title, dateMs, sortTitleActive, sortDateMsActive){
+function generalFilter(tasks, text, time, isTitle, isDateMs, isSortTitleActive, isSortDateMsActive){
 
-  if(!sortTitleActive && !sortDateMsActive && !text && !time){
-    return tasks;
-  }
-
-  if(!sortTitleActive && !sortDateMsActive){
+  function searchByTextAndTime (data) {
     if(!text && !time){
-      return tasks;
+      return data;
     }
-
     if(text && !time){
-      return tasks.filter(task => task.title.toLowerCase().includes(text));   
+      return data.filter(task => task.title.toLowerCase().includes(text));    
     }
-
     if(!text && time){
-      return tasks.filter(task => task.dateMs === time);
+      return data.filter(task => task.dateMs === time);
     }
-
     if(text && time){
-      return tasks.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
-     }
+      return data.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
+    } 
   }
 
-  if(title && sortTitleActive){
-    let direction = 1;
-    const sorted = [].slice.call(tasks).sort((a, b) => {
+  function sort (direction){
+    return [].slice.call(tasks).sort((a, b) => {
       if (a["title"] === b["title"]) { return 0; };
       return a["title"] > b["title"] ? direction : direction * -1;
     });
-
-    if(!text && !time){
-      return sorted;
-    }
-
-    if(text && !time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text));    
-    }
-
-    if(!text && time){
-      return sorted.filter(task => task.dateMs === time);
-    }
-
-    if(text && time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
-    }
   }
 
-  if(!title && sortTitleActive){
-    let direction = -1;
-    const sorted = [].slice.call(tasks).sort((a, b) => {
-    if (a["title"] === b["title"]) { return 0; };
-      return a["title"] > b["title"] ? direction : direction * -1;
-    });
 
-    if(!text && !time){
-      return sorted;
-    }
-
-    if(text && !time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text));   
-    }
-
-    if(!text && time){
-      return sorted.filter(task => task.dateMs === time);
-    }
-
-    if(text && time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
-    }
+  if(!isSortTitleActive && !isSortDateMsActive && !text && !time){
+    return tasks;
   }
 
-  if(dateMs && sortDateMsActive){
-    let direction = 1;
-    const sorted = [].slice.call(tasks).sort((a, b) => {
-      if (a["dateMs"] === b["dateMs"]) { return 0; };
-      return a["dateMs"] > b["dateMs"] ? direction : direction * -1;
-    });
-
-    if(!text && !time){
-      return sorted;
-    }
-
-    if(text && !time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text));  
-    }
-
-    if(!text && time){
-      return sorted.filter(task => task.dateMs === time);
-    }
-
-    if(text && time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
-    }
+  if(!isSortTitleActive && !isSortDateMsActive){
+    return searchByTextAndTime(tasks);
   }
 
-  if(!dateMs && sortDateMsActive){
-    let direction = -1;
-    const sorted = [].slice.call(tasks).sort((a, b) => {
-      if (a["dateMs"] === b["dateMs"]) { return 0; };
-      return a["dateMs"] > b["dateMs"] ? direction : direction * -1;
-    });
+  if(isTitle && isSortTitleActive){
+    return searchByTextAndTime(sort(1));
+  }
 
-    if(!text && !time){
-      return sorted;
-    }
+  if(!isTitle && isSortTitleActive){
+    return searchByTextAndTime(sort(-1));
+  }
 
-    if(text && !time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text));   
-    }
+  if(isDateMs && isSortDateMsActive){
+    return searchByTextAndTime(sort(1));
+  }
 
-    if(!text && time){
-      return sorted.filter(task => task.dateMs === time);
-    }
-
-    if(text && time){
-      return sorted.filter(task => task.title.toLowerCase().includes(text)).filter(task => task.dateMs === time);
-    }
+  if(!isDateMs && isSortDateMsActive){
+    return searchByTextAndTime(sort(-1));
   }
 
 }
-
 
 export default generalFilter;

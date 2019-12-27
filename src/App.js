@@ -11,7 +11,7 @@ class App extends React.Component {
     super();
 
     if(localStorage.tasks){
-        let superTasks = JSON.parse(localStorage.getItem("tasks"))
+        let superTasks = JSON.parse(localStorage.getItem("tasks"));
         this.state = {
           tasks: superTasks,
           text: "",
@@ -29,10 +29,10 @@ class App extends React.Component {
         ],
         text: "",
         time: "",
-        title: true,
-        sortTitleActive: false,
-        dateMs: true,
-        sortDateMsAcive: false
+        isTitle: true,
+        isSortTitleActive: false,
+        isDateMs: true,
+        isSortDateMsAcive: false
       }
     }
   }
@@ -40,38 +40,39 @@ class App extends React.Component {
   addTask = (task, date) => {
     this.setState(state => {
       let {tasks} = state;
-      tasks.push({
+      const freshTasks = [...tasks];
+      freshTasks.push({
         id:Date.parse(new Date()),
         title: task,
         done: false,
         date: date,
         dateMs: Math.round(Date.parse(date)/86400000),
       });
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      return tasks;
+      localStorage.setItem("tasks", JSON.stringify(freshTasks));
+      return {tasks: freshTasks};
     }); 
   };
 
   doneTask = id => {
-    const index = this.state.tasks.findIndex(task => task.id === id);
-
     this.setState(state=>{
       let{tasks} = state;
-      tasks[index].done = !tasks[index].done;
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      return tasks;
+      const freshTasks = [...tasks];
+      freshTasks.map(task => {
+        task.id === id ? task.done = !task.done : task.done = task.done;
+      });
+      localStorage.setItem("tasks", JSON.stringify(freshTasks));
+      return {tasks: freshTasks};
     });
   }
 
   deleteTask = id => {
     this.setState(state => {
-      let {tasks} = state
+      let {tasks} = state;
       const freshTasks = tasks.filter(task => task.id !== id);
       localStorage.setItem("tasks", JSON.stringify(freshTasks));
-      return {tasks: freshTasks}
+      return {tasks: freshTasks}; 
     })
   }
-
 
   filterText = e =>{
     this.setState({
@@ -85,20 +86,19 @@ class App extends React.Component {
     })
   }
 
-
-  sortTitle = title => {
+  sortTitle = () => {
     this.setState({
-      title: !title,
-      sortTitleActive: true,
-      sortDateMsAcive: false
+      isTitle: !this.state.isTitle,
+      isSortTitleActive: true,
+      isSortDateMsAcive: false
     })
   }
 
-  sortDate = dateMs => {
+  sortDate = () => {
     this.setState({
-      dateMs: !dateMs,
-      sortTitleActive:false,
-      sortDateMsAcive:true
+        isDateMs: !this.state.isDateMs,
+        isSortTitleActive:false,
+        isSortDateMsAcive:true
     })
   }
 
@@ -106,14 +106,13 @@ class App extends React.Component {
     this.setState({
       text: "",
       time: "",
-      sortTitleActive:false,
-      sortDateMsAcive:false
+      isSortTitleActive:false,
+      isSortDateMsAcive:false
     })
   }
 
-
   render(){
-    const { tasks, text, time, title, dateMs, sortTitleActive, sortDateMsAcive } = this.state;
+    const { tasks, text, time, isTitle, isDateMs, isSortTitleActive, isSortDateMsAcive } = this.state;
 
     return (
       <div className="App">
@@ -121,6 +120,7 @@ class App extends React.Component {
         <h1 className="top">
           React ToDo
         </h1>
+
 
         <Taskfilter
           filterText={this.filterText}
@@ -131,15 +131,13 @@ class App extends React.Component {
           sortTitle={this.sortTitle}
           sortDate={this.sortDate}
           reset={this.reset}
-          title={title}
-          dateMs={dateMs}
         />
 
         <TaskInput 
           addTask={this.addTask}
         />
 
-        {generalFilter(tasks, text, time, title, dateMs, sortTitleActive, sortDateMsAcive).map(task => ( 
+        {generalFilter(tasks, text, time, isTitle, isDateMs, isSortTitleActive, isSortDateMsAcive).map(task => ( 
 
           <Task 
             onChange={this.doneTask}

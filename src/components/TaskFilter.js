@@ -6,7 +6,6 @@ export default class TaskFilter extends React.Component {
   }
 
   render(){
-
     const {filterText,filterDate} = this.props;
 
     return (
@@ -15,7 +14,6 @@ export default class TaskFilter extends React.Component {
           placeholder="TEXT SEACH"
           defaultValue=""
           onChange={filterText}
-
           type="text"
         />
         <input
